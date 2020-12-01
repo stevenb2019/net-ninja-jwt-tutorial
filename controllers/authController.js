@@ -11,6 +11,10 @@ module.exports.signup_post = (req, res) => {
 }
 
 module.exports.login_post = (req, res) => {
-    res.send('user logging in');
+    // This is called destructuring
+    const { email, password } = req.body;
+
+    res.send(email + " " + password);
+    //res.send('user logging in');
 }
 
