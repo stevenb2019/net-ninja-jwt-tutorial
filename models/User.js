@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { isEmail } = require('validator');
+const bcrypt = require('bcrypt');
 
  const userSchema = new mongoose.Schema({
     email: {
@@ -38,11 +39,33 @@ const { isEmail } = require('validator');
     next();
  })
 
+/*
+ The logic behind using this .pre hook for mongoose
+ is to hash the password that is used to sign up for an account
+ that a user provides. The salt is an extra string of characters
+ added to the password before it is hashed as an extra level of security on
+ top of the hashing. The salt is added to the password and the password passed into
+ the hash function which generates the crazy string of characters.
+
+ The utility of this, is that if someone breached the database, the passwords
+ aren't just visible. The person will see the hashed passwords which are of no use.
+
+ My only question is, how does the program remember the salt to use when a user trys to login?
+
+ Also another point to make is that when a user logs in, the salt is appended to their
+ password attempt and passed through the hashing function and checked with the user's record's 
+ password to make sure the hashed passwords match. If so, the user is allowed to login.
+*/
+
+
  // display user before saving to the database
- userSchema.pre('save', function(next) {
+ userSchema.pre('save', async function(next) {
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt);
+
     // this refers to the local instance of the document instance
     // before it is saved to the database
-    console.log("Display contents before saving", this);
+    //console.log("Display contents before saving", this);
 
     next();
  })

@@ -25,7 +25,7 @@ module.exports.signup_get = (req, res) => {
 }
 
 module.exports.login_get = (req, res) => {
-    res.render('signup');
+    res.render('login');
 }
 
 // Make sure to say the function is asynchronous
