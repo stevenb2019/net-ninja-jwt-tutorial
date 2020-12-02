@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 
 // handle errors
 const handleErrors = (err) => {
@@ -20,6 +21,19 @@ const handleErrors = (err) => {
     return errors;
 }
 
+const maxAge = 3 * 24 * 60 * 60;
+
+// create token
+// use id from database for document as payload
+//, second paramter is the secret used, header is made for us
+// the third parameter are options such as expiresIn which 
+// tells you how long the token will be valid for
+const createToken = (id) => {
+    return jwt.sign({ id }, 'net ninja secret', {
+        expiresIn: maxAge
+    });
+}
+
 module.exports.signup_get = (req, res) => {
     res.render('signup');
 }
@@ -34,7 +48,9 @@ module.exports.signup_post = async (req, res) => {
 
     try{
         const user = await User.create({ email, password });
-        res.status(201).json(user);
+        const token = createToken(user._id);
+        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+        res.status(201).json({user: user._id});
     }
     catch (err){
         const errors = handleErrors(err);

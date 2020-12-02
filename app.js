@@ -65,3 +65,32 @@ app.get('/get-cookies', (req, res) => {
 
     res.json(cookies);
 });
+
+/*
+    JWT (JSON Web Tokens) Explained 
+
+    When a user signs in to their account, a request is sent to the 
+    server. The server takes this login/signup request and creates a
+    cookie with a json web token that is used to authenicate access
+    and behaviors from the user. Certain requests sent to the browser
+    need to be authenticated with the json web token. 
+
+    The json web token is created by generating a header which is essentially
+    meta-data about the token, the payload which is the information about the 
+    user, and the signature which is used as security to make sure the token 
+    wasn't tampered with on the client side. 
+
+    The nitty gritty details of it is that the request that is sent defines a
+    header and payload which are encoded together. A secret that exists on the backend
+    and is not supposed to be accessed or else the web server would be compromised is 
+    used to generate a hash called with the signature combining the encoded values of 
+    the header and payload along with the secret. This creates the format of 
+    header.payload.signature which is the jwt. 
+
+    jwt.io shows an example of the hashed values that are sent to and from the browser
+    and what they actually represent.
+
+    My only question is, why are signatures necessary, is it not possible to 
+    just check the header and payload to see if they match since if the token 
+    was tampered with that's where the tampering would have been done? 
+*/
